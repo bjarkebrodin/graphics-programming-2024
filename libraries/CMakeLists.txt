@@ -2,5 +2,7 @@
 SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_LIST_DIR})
 
 FOREACH(subdir ${SUBDIRS})
-    add_subdirectory(${subdir})
+    if (NOT ${subdir} MATCHES "CMakeFiles")
+        add_subdirectory(${subdir})
+    ENDIF()
 ENDFOREACH()
