@@ -1,0 +1,10 @@
+^C:\USERS\BJARKE\GRAPHICSPROGRAMMING\GRAPHICS-PROGRAMMING-2024\EXERCISES\EXERCISE01\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Bjarke/GraphicsProgramming/graphics-programming-2024 -BC:/Users/Bjarke/GraphicsProgramming/graphics-programming-2024 --check-stamp-file C:/Users/Bjarke/GraphicsProgramming/graphics-programming-2024/exercises/exercise01/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

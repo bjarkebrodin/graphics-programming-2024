@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7CA6BA55-30D9-3BDA-8090-A172C57737CF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D7B3301E-1C1C-336F-B179-58BC3A55B590}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

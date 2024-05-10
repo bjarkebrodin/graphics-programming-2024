@@ -1,9 +1,12 @@
 #include "TerrainApplication.h"
 
-// (todo) 01.1: Include the libraries you need
-
+#define STB_PERLIN_IMPLEMENTATION
+#include <stb_perlin.h>
 #include <cmath>
 #include <iostream>
+#include <vector>
+
+
 
 // Helper structures. Declared here only for this exercise
 struct Vector2
@@ -31,7 +34,7 @@ struct Vector3
 
 
 TerrainApplication::TerrainApplication()
-    : Application(1024, 1024, "Terrain demo"), m_gridX(16), m_gridY(16), m_shaderProgram(0)
+    : Application(1024, 1024, "Terrain demo"), m_gridX(128), m_gridY(128), m_shaderProgram(0)
 {
 }
 
@@ -42,23 +45,98 @@ void TerrainApplication::Initialize()
     // Build shaders and store in m_shaderProgram
     BuildShaders();
 
-    // (todo) 01.1: Create containers for the vertex position
+    glEnable(GL_DEPTH_TEST);
 
+    std::vector<Vector3> vertices;
+    std::vector<Vector2> texCoords;
+	std::vector<unsigned int> indices;
+    std::vector<Vector3> colors;
 
-    // (todo) 01.1: Fill in vertex data
+    vertices.reserve((m_gridX+1) * (m_gridY+1));
+    texCoords.reserve((m_gridX + 1) * (m_gridY + 1));
+    colors.reserve((m_gridX + 1) * (m_gridY + 1));
+    indices.reserve((m_gridX+1) * (m_gridY+1) * 6);
 
+    for (unsigned int j = 0u; j < m_gridY + 1u; j++) {
+        for (unsigned int i = 0u; i < m_gridX + 1u; i++) {
+            float x = i * (1.0f / m_gridX) - 0.5f;
+            float y = j * (1.0 / m_gridY) - 0.5f;
+            float z = 0.0f;
+            float octaves = 6.0f;
+            float lacunarity = 2.3f;
+            float gain = 0.5f;
+            z = stb_perlin_fbm_noise3(x, y, z, lacunarity, gain, octaves);
 
-    // (todo) 01.1: Initialize VAO, and VBO
+            vertices.emplace_back(x, y, z);
+            texCoords.emplace_back(static_cast<float>(i), static_cast<float>(j));
 
+            Vector3 water = Vector3(0.0f, 0.2f, 1.0f);
+            Vector3 soil = Vector3(0.8f, 0.5f, 0.4f);
+            Vector3 rock = Vector3(0.5f, 0.5f, 0.5f);
+            Vector3 snow = Vector3(1.0f, 1.0f, 1.0f);
 
-    // (todo) 01.5: Initialize EBO
+            if (z > 0.5f) {
+                colors.emplace_back(snow);
+            }
+            else if (z > 0.0f) {
+                colors.emplace_back(rock);
+            }
+            else if (z > -0.5f) {
+                colors.emplace_back(soil);
+            }
+            else {
+                colors.emplace_back(water);
+            }
+        }
+    }
 
+	for (unsigned int j = 0u; j < m_gridY; j++) {
+		for (unsigned int i = 0u; i < m_gridX; i++) {
 
-    // (todo) 01.1: Unbind VAO, and VBO
+            unsigned int botLeft = i + ((m_gridX+1u) * j);
+            unsigned int botRight = botLeft + 1u;
+            unsigned int topRight = botRight + (m_gridX+1u);
+            unsigned int topLeft = botLeft + (m_gridX+1u);
 
+            indices.emplace_back(botLeft);
+            indices.emplace_back(topLeft);
+            indices.emplace_back(topRight);
 
-    // (todo) 01.5: Unbind EBO
+            indices.emplace_back(botLeft);
+            indices.emplace_back(topRight);
+            indices.emplace_back(botRight);
+        }
+    }
 
+    vao.Bind();
+    vbo.Bind();
+
+    VertexAttribute position(Data::Type::Float, 3);
+    VertexAttribute textureCoordinate(Data::Type::Float, 2);
+    VertexAttribute color(Data::Type::Float, 3);
+
+    unsigned int posOffset = 0;
+    unsigned int texOffset = posOffset + vertices.size() * position.GetSize();
+    unsigned int colOffset = texOffset + vertices.size() * textureCoordinate.GetSize();
+
+    unsigned int vSize = position.GetSize() + textureCoordinate.GetSize() + color.GetSize();
+    unsigned int vboBytes = vertices.size() * vSize;
+
+    vbo.AllocateData(vboBytes);
+    vbo.UpdateData<Vector3>(vertices, 0);
+    vbo.UpdateData<Vector2>(texCoords, texOffset);
+    vbo.UpdateData<Vector3>(colors, colOffset);
+
+    ebo.Bind();
+    ebo.AllocateData<unsigned int>(indices);
+
+    vao.SetAttribute(0, position, posOffset, 0);
+    vao.SetAttribute(1, textureCoordinate, texOffset, 0);
+    vao.SetAttribute(2, color, colOffset, 0);
+
+    vao.Unbind();
+    vbo.Unbind();
+    ebo.Unbind();
 }
 
 void TerrainApplication::Update()
@@ -77,9 +155,14 @@ void TerrainApplication::Render()
 
     // Set shader to be used
     glUseProgram(m_shaderProgram);
+    vao.Bind();
+    ebo.Bind();
 
-    // (todo) 01.1: Draw the grid
+    // Enable wireframes
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    // Draw indices
+    glDrawElements(GL_TRIANGLES, (m_gridX+1)*(m_gridY+1)*6, GL_UNSIGNED_INT, 0);
 }
 
 void TerrainApplication::Cleanup()
@@ -105,8 +188,9 @@ void TerrainApplication::BuildShaders()
         "   normal = aNormal;\n"
         "   gl_Position = Matrix * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
         "}\0";
+
     const char* fragmentShaderSource = "#version 330 core\n"
-        "uniform uint Mode = 0u;\n"
+        "uniform int Mode = 0;\n"
         "in vec2 texCoord;\n"
         "in vec3 color;\n"
         "in vec3 normal;\n"
@@ -133,6 +217,7 @@ void TerrainApplication::BuildShaders()
         "       break;\n"
         "   }\n"
         "}\n\0";
+
 
     // vertex shader
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -182,7 +267,7 @@ void TerrainApplication::UpdateOutputMode()
         {
             int modeLocation = glGetUniformLocation(m_shaderProgram, "Mode");
             glUseProgram(m_shaderProgram);
-            glUniform1ui(modeLocation, i);
+            glUniform1i(modeLocation, i);
             break;
         }
     }
