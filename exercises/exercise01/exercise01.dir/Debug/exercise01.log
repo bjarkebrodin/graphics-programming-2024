@@ -1,7 +1,4 @@
 ﻿  TerrainApplication.cpp
-C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp(63,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp(68,66): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp(119,28): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp(120,28): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp(123,27): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp(71,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\TerrainApplication.cpp(76,66): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   exercise01.vcxproj -> C:\Users\Bjarke\GraphicsProgramming\graphics-programming-2024\exercises\exercise01\Debug\exercise01.exe
